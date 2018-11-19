@@ -1,6 +1,7 @@
 import * as React from "react";
 import FigureEditor from "./react-leaflet-figure-editor";
 import { Map, TileLayer } from "react-leaflet";
+declare module "../node_modules/react-leaflet-control/dist/control.js";
 
 import "./index.css";
 
@@ -13,8 +14,10 @@ class App extends React.Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          <Control position="topright">
+            <FigureEditor />
+          </Control>
         </Map>
-        <FigureEditor />
       </div>
     );
   }
