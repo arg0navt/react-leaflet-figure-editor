@@ -1,5 +1,0 @@
-{
-    "private": true,
-    "name": "react-leaflet-figure-editor",
-    "main": "./index.tsx"
-  }
