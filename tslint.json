@@ -11,6 +11,7 @@
     "ordered-imports": [false],
     "object-literal-sort-keys": [false],
     "no-require-imports": true,
-    "no-var-requires": true
+    "no-var-requires": true,
+    "member-access": false
   }
 }
