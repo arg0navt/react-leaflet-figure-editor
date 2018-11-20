@@ -1,7 +1,7 @@
 import * as React from "react";
 import FigureEditor from "./react-leaflet-figure-editor";
 import { Map, TileLayer } from "react-leaflet";
-declare module "../node_modules/react-leaflet-control/dist/control.js";
+import Control from "@skyeer/react-leaflet-custom-control";
 
 import "./index.css";
 
