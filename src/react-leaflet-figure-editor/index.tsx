@@ -47,7 +47,7 @@ export default class FigureEditor extends React.Component<
     this.setState({ showAddFigureType: !this.state.showAddFigureType });
 
   addFigure = (figure: IFigure) : void =>
-    this.setState({ figureList: [...this.state.figureList, figure] });
+    this.setState({ figureList: [...this.state.figureList, figure] }, () => console.log(this.state));
 
   render() {
     return (
