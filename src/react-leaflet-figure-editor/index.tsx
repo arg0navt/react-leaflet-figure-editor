@@ -1,5 +1,6 @@
 import * as React from "react";
-import Settings from "./settings";
+import AddFigureType from "./addFigureType";
+import {IFigure, IfigureEditorState} from "./interfaces";
 
 const SettingIcon = () => (
   <svg
@@ -33,20 +34,20 @@ const SettingIcon = () => (
   </svg>
 );
 
-interface IfigureEditorState {
-  showSettings: boolean;
-}
-
 export default class FigureEditor extends React.Component<
   any,
   IfigureEditorState
 > {
   state: IfigureEditorState = {
-    showSettings: false
+    showAddFigureType: false,
+    figureList: []
   };
 
   toggleSettings = () =>
-    this.setState({ showSettings: !this.state.showSettings });
+    this.setState({ showAddFigureType: !this.state.showAddFigureType });
+
+  addFigure = (figure: IFigure) : void =>
+    this.setState({ figureList: [...this.state.figureList, figure] });
 
   render() {
     return (
@@ -56,7 +57,9 @@ export default class FigureEditor extends React.Component<
             <SettingIcon />
           </button>
         </div>
-        {this.state.showSettings ? <Settings /> : null}
+        {this.state.showAddFigureType ? (
+          <AddFigureType addFigure={this.addFigure} />
+        ) : null}
       </div>
     );
   }
