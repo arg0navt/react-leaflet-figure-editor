@@ -10,21 +10,35 @@ export default class AddFigureType extends React.Component<
   any
 > {
   addFigure = type => event => {
-    const id = Math.random().toString(36).substr(2, 9);
-    this.props.addFigure({ type, coordinates: [], id});
+    const id = Math.random()
+      .toString(36)
+      .substr(2, 9);
+    this.props.addFigure({ type, coordinates: [], id });
   };
   public render() {
     return (
-      <div className="settings-figure-control">
-        <button className="settings-type" onClick={this.addFigure("Polygon")}>
-          Полигон
-        </button>
-        <button className="settings-type" onClick={this.addFigure("Cyrcle")}>
+      <div className="wrap-settings-type">
+        <div
+          key={1}
+          className="settings-type"
+          onClick={this.addFigure("Polygon")}
+        >
+          Polygon
+        </div>
+        <div
+          key={2}
+          className="settings-type"
+          onClick={this.addFigure("Cyrcle")}
+        >
           Круг
-        </button>
-        <button className="settings-type" onClick={this.addFigure("Point")}>
+        </div>
+        <div
+          key={3}
+          className="settings-type"
+          onClick={this.addFigure("Point")}
+        >
           Точка
-        </button>
+        </div>
       </div>
     );
   }

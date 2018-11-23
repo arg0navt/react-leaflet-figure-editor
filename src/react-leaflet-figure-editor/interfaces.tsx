@@ -7,6 +7,7 @@ export interface IFigure {
 export interface IfigureEditorState {
   showAddFigureType: boolean;
   figureList: IFigure[];
+  focusFigure: string | null;
 }
 
 export interface IPoint {

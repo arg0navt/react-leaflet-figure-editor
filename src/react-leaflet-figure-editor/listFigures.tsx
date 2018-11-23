@@ -1,20 +1,35 @@
 import * as React from "react";
-import { IFigure } from "./interfaces";
+import { IFigure, IPoint } from "./interfaces";
 
 interface IPropsList {
-  figures: IFigure[]
+  figures: IFigure[];
+  focusFigure: string | null;
 }
 
-export default (props: IPropsList)  => (
+interface IPropsItem {
+  type: string;
+  coordinates: IPoint[];
+  id: string;
+  focusFigure: string | null;
+}
+
+export default (props: IPropsList) => (
   <div className="list-figures">
     {props.figures.map((item: IFigure) => (
-      <FigureItem {...item} />
+      <FigureItem {...item} focusFigure={props.focusFigure} />
     ))}
   </div>
 );
 
-class FigureItem extends React.Component<IFigure, any> {
+class FigureItem extends React.Component<IPropsItem, any> {
   public render() {
-    return <div className="figure-item">{this.props.type}</div>;
+    return (
+      <div
+        className={`figure-item ${this.props.focusFigure === this.props.id &&
+          "active"}`}
+      >
+        {this.props.type}
+      </div>
+    );
   }
 }
