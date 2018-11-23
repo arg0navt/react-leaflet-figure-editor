@@ -752,3 +752,14 @@
 .list-figures::-webkit-scrollbar-track {
   background-color: #112f41;
 }
+
+.figure-info {
+  margin-top: 10px;
+  padding: 4px;
+  box-sizing: border-box;
+  background: #4FB99F; 
+}
+
+.figure-info p {
+  margin: 0;
+}

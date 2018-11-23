@@ -20,6 +20,7 @@ export default (props: IPropsList) => (
     {props.figures.map((item: IFigure) => (
       <FigureItem
         {...item}
+        key={item.id}
         focusFigure={props.focusFigure}
         changeFucusFigure={props.changeFucusFigure}
       />

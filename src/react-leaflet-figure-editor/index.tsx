@@ -1,7 +1,10 @@
 import * as React from "react";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
+import InformationAboutFigure from "./information";
+import Control from "@skyeer/react-leaflet-custom-control";
 import { IFigure, IfigureEditorState } from "./interfaces";
+import { MapLayer } from "react-leaflet"; 
 
 const SettingIcon = () => (
   <svg
@@ -35,7 +38,7 @@ const SettingIcon = () => (
   </svg>
 );
 
-export default class FigureEditor extends React.Component<
+class FigureEditor extends MapLayer<
   any,
   IfigureEditorState
 > {
@@ -56,8 +59,14 @@ export default class FigureEditor extends React.Component<
 
   changeFucusFigure = (id: string): void => this.setState({ focusFigure: id });
 
-  render() {
+  createLeafletElement() {
+    return;
+  }
+  public render() {
+    const activeFigure = this.state.focusFigure ? this.state.figureList.find((item) => item.id === this.state.focusFigure) : undefined;
+
     return (
+      <Control position="topright">
       <div className="figure-control">
         <div className="wrap-figure-control">
           <button className="settings-button" onClick={this.toggleSettings}>
@@ -74,9 +83,13 @@ export default class FigureEditor extends React.Component<
                 changeFucusFigure={this.changeFucusFigure}
               />
             )}
+            {activeFigure && <InformationAboutFigure {...activeFigure} />}
           </div>
         )}
       </div>
+      </Control>
     );
   }
 }
+
+export default FigureEditor;

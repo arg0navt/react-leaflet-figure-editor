@@ -13,6 +13,7 @@
     "no-require-imports": true,
     "no-var-requires": true,
     "member-access": false,
-    "no-console": [true, "warning"]
+    "no-console": [true, "warning"],
+    "jsx-no-string-ref": false
   }
 }
