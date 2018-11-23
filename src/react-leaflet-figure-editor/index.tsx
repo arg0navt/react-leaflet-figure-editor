@@ -54,6 +54,8 @@ export default class FigureEditor extends React.Component<
       focusFigure: figure.id
     });
 
+  changeFucusFigure = (id: string): void => this.setState({ focusFigure: id });
+
   render() {
     return (
       <div className="figure-control">
@@ -69,6 +71,7 @@ export default class FigureEditor extends React.Component<
               <ListFigures
                 figures={this.state.figureList}
                 focusFigure={this.state.focusFigure}
+                changeFucusFigure={this.changeFucusFigure}
               />
             )}
           </div>
