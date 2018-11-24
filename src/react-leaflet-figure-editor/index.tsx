@@ -1,10 +1,18 @@
 import * as React from "react";
+import * as L from "leaflet";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
 import InformationAboutFigure from "./information";
 import Control from "@skyeer/react-leaflet-custom-control";
 import { IFigure, IfigureEditorState } from "./interfaces";
-import { MapLayer } from "react-leaflet"; 
+import { MapLayer, withLeaflet } from "react-leaflet"; 
+
+declare module "react-leaflet" {
+  const withLeaflet: <T>(component: T) => T;
+  interface ILeafletContext {
+      map?: L.Map;
+  }
+}
 
 const SettingIcon = () => (
   <svg
@@ -38,10 +46,7 @@ const SettingIcon = () => (
   </svg>
 );
 
-class FigureEditor extends MapLayer<
-  any,
-  IfigureEditorState
-> {
+class FigureEditor extends MapLayer {
   state: IfigureEditorState = {
     showAddFigureType: false,
     figureList: [],
@@ -59,9 +64,16 @@ class FigureEditor extends MapLayer<
 
   changeFucusFigure = (id: string): void => this.setState({ focusFigure: id });
 
-  createLeafletElement() {
-    return;
+  componentDidMount() {
+    console.log(this);
   }
+
+  /* tslint:disable */
+  createLeafletElement(props: Object): Object {
+    return props;
+  }
+  /* tslint:enable */
+
   public render() {
     const activeFigure = this.state.focusFigure ? this.state.figureList.find((item) => item.id === this.state.focusFigure) : undefined;
 
@@ -92,4 +104,4 @@ class FigureEditor extends MapLayer<
   }
 }
 
-export default FigureEditor;
+export default withLeaflet(FigureEditor);
