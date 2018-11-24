@@ -12,6 +12,7 @@ declare module "react-leaflet" {
   interface ILeafletContext {
       map?: L.Map;
   }
+
 }
 
 const SettingIcon = () => (
@@ -65,14 +66,12 @@ class FigureEditor extends MapLayer {
   changeFucusFigure = (id: string): void => this.setState({ focusFigure: id });
 
   componentDidMount() {
-    console.log(this);
+    this.leafletElement.map.on("click", (e) => console.log(e));
   }
 
-  /* tslint:disable */
   createLeafletElement(props: Object): Object {
     return props;
   }
-  /* tslint:enable */
 
   public render() {
     const activeFigure = this.state.focusFigure ? this.state.figureList.find((item) => item.id === this.state.focusFigure) : undefined;
