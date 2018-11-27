@@ -14,6 +14,7 @@
     "no-var-requires": true,
     "member-access": false,
     "no-console": [true, "warning"],
-    "jsx-no-string-ref": false
+    "jsx-no-string-ref": false,
+    "interface-name": false
   }
 }

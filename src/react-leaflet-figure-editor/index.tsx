@@ -5,14 +5,13 @@ import ListFigures from "./listFigures";
 import InformationAboutFigure from "./information";
 import Control from "@skyeer/react-leaflet-custom-control";
 import { IFigure, IfigureEditorState } from "./interfaces";
-import { MapLayer, withLeaflet } from "react-leaflet"; 
+import { MapLayer, withLeaflet } from "react-leaflet";
 
 declare module "react-leaflet" {
   const withLeaflet: <T>(component: T) => T;
   interface ILeafletContext {
       map?: L.Map;
   }
-
 }
 
 const SettingIcon = () => (
@@ -47,7 +46,7 @@ const SettingIcon = () => (
   </svg>
 );
 
-class FigureEditor extends MapLayer {
+class FigureEditor extends MapLayer<any> {
   state: IfigureEditorState = {
     showAddFigureType: false,
     figureList: [],
@@ -66,38 +65,40 @@ class FigureEditor extends MapLayer {
   changeFucusFigure = (id: string): void => this.setState({ focusFigure: id });
 
   componentDidMount() {
-    this.leafletElement.map.on("click", (e) => console.log(e));
+    this.props.leaflet.map.on("click", e => console.log(e));
   }
 
-  createLeafletElement(props: Object): Object {
+  createLeafletElement(props: any): any {
     return props;
   }
 
   public render() {
-    const activeFigure = this.state.focusFigure ? this.state.figureList.find((item) => item.id === this.state.focusFigure) : undefined;
+    const activeFigure = this.state.focusFigure
+      ? this.state.figureList.find(item => item.id === this.state.focusFigure)
+      : undefined;
 
     return (
       <Control position="topright">
-      <div className="figure-control">
-        <div className="wrap-figure-control">
-          <button className="settings-button" onClick={this.toggleSettings}>
-            <SettingIcon />
-          </button>
-        </div>
-        {this.state.showAddFigureType && (
-          <div className="settings-figure-control">
-            <AddFigureType addFigure={this.addFigure} />
-            {this.state.figureList.length > 0 && (
-              <ListFigures
-                figures={this.state.figureList}
-                focusFigure={this.state.focusFigure}
-                changeFucusFigure={this.changeFucusFigure}
-              />
-            )}
-            {activeFigure && <InformationAboutFigure {...activeFigure} />}
+        <div className="figure-control">
+          <div className="wrap-figure-control">
+            <button className="settings-button" onClick={this.toggleSettings}>
+              <SettingIcon />
+            </button>
           </div>
-        )}
-      </div>
+          {this.state.showAddFigureType && (
+            <div className="settings-figure-control">
+              <AddFigureType addFigure={this.addFigure} />
+              {this.state.figureList.length > 0 && (
+                <ListFigures
+                  figures={this.state.figureList}
+                  focusFigure={this.state.focusFigure}
+                  changeFucusFigure={this.changeFucusFigure}
+                />
+              )}
+              {activeFigure && <InformationAboutFigure {...activeFigure} />}
+            </div>
+          )}
+        </div>
       </Control>
     );
   }
