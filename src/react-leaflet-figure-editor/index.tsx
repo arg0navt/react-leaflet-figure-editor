@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as L from "leaflet";
+import Control from "@skyeer/react-leaflet-custom-control";
+import { MapLayer, withLeaflet, Polygon, Marker } from "react-leaflet";
+import { IFigure, IfigureEditorState, IPoint } from "./interfaces";
+import InformationAboutFigure from "./information";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
-import InformationAboutFigure from "./information";
-import Control from "@skyeer/react-leaflet-custom-control";
-import { IFigure, IfigureEditorState, IPoint } from "./interfaces";
-import { MapLayer, withLeaflet, Polygon } from "react-leaflet";
+import { iconMarker } from "./icons";
 
 declare module "react-leaflet" {
   const withLeaflet: <T>(component: T) => T;
@@ -51,6 +52,16 @@ class FigureEditor extends MapLayer<any> {
     });
   };
 
+  renderPointsPolyline = (id: string, coordinates: IPoint[]) => {
+    return coordinates.map((point: IPoint, index: number) => (
+      <Marker
+        key={id + point.lat + point.lng + index}
+        position={point}
+        icon={iconMarker}
+      />
+    ));
+  };
+
   public render() {
     const activeFigure = this.state.activeFigureID
       ? this.state.figureList.find(
@@ -76,12 +87,15 @@ class FigureEditor extends MapLayer<any> {
         </Control>
         {this.state.figureList.map((figure: IFigure) => {
           if (figure.type === "Polygon" && figure.coordinates.length >= 3) {
-            return <Polygon
-              key={figure.id}
-              positions={[...figure.coordinates, figure.coordinates[0]]}
-              refs={figure.id}
-              color={"red"}
-            />
+            return [
+              <Polygon
+                key={figure.id}
+                positions={[...figure.coordinates, figure.coordinates[0]]}
+                refs={figure.id}
+                color={"red"}
+              />,
+              this.renderPointsPolyline(figure.id, figure.coordinates)
+            ];
           } else {
             return null;
           }
