@@ -7,6 +7,7 @@ export interface IFigure {
 export interface IfigureEditorState {
   figureList: IFigure[];
   activeFigureID: string | null;
+  clickActivated: boolean;
 }
 
 export interface IPoint {

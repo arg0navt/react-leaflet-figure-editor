@@ -2,6 +2,7 @@ import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
 import { MapLayer, withLeaflet, Polygon, Marker } from "react-leaflet";
+import {debounce} from "lodash";
 import { IFigure, IfigureEditorState, IPoint } from "./interfaces";
 import InformationAboutFigure from "./information";
 import AddFigureType from "./addFigureType";
@@ -18,16 +19,25 @@ declare module "react-leaflet" {
 class FigureEditor extends MapLayer<any> {
   state: IfigureEditorState = {
     figureList: [],
-    activeFigureID: null
+    activeFigureID: null,
+    clickActivated: true,
   };
 
   componentDidMount() {
-    this.props.leaflet.map.on("click", e => this.addPoint(e.latlng));
+    this.props.leaflet.map.on("click", e => {
+      this.addPoint(e.latlng);
+    });
   }
 
   createLeafletElement(props: any): any {
     return props;
   }
+
+  getActiveFigure = (state: IfigureEditorState): IFigure | undefined => {
+    return state.figureList.find(
+      (figure: IFigure) => figure.id === state.activeFigureID
+    );
+  };
 
   addFigure = (figure: IFigure): void =>
     this.setState({
@@ -39,25 +49,47 @@ class FigureEditor extends MapLayer<any> {
     this.setState({ activeFigureID: id });
 
   addPoint = (e: IPoint): void => {
-    this.setState((prevState: IfigureEditorState) => {
-      const activeFigure: IFigure | undefined = prevState.figureList.find(
-        (item: IFigure) => item.id === this.state.activeFigureID
-      );
-      if (activeFigure) {
-        if (activeFigure.type === "Polygon") {
-          activeFigure.coordinates.push({ lat: e.lat, lng: e.lng });
+    if (this.state.clickActivated) {
+      this.setState(
+        (prevState: IfigureEditorState): IfigureEditorState => {
+          const activeFigure: IFigure | undefined = this.getActiveFigure(
+            prevState
+          );
+          if (activeFigure) {
+            if (activeFigure.type === "Polygon") {
+              activeFigure.coordinates.push({ lat: e.lat, lng: e.lng });
+            }
+          }
+          return prevState;
         }
-      }
-      return prevState;
-    });
+      );
+    }
   };
 
-  renderPointsPolyline = (id: string, coordinates: IPoint[]) => {
+  dragPointPolygon = (id: string, index: number) => (e: any) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: IFigure | undefined = this.getActiveFigure(
+          prevState
+        );
+        if (activeFigure) {
+          prevState.clickActivated = false;
+          activeFigure.coordinates[index].lat = e.latlng.lat;
+          activeFigure.coordinates[index].lng = e.latlng.lng;
+        }
+        return prevState;
+      }, debounce(() => this.setState({clickActivated: true}), 2000)
+    );
+  };
+
+  renderPointsPolygon = (id: string, coordinates: IPoint[]) => {
     return coordinates.map((point: IPoint, index: number) => (
       <Marker
-        key={id + point.lat + point.lng + index}
+        key={id + index}
         position={point}
         icon={iconMarker}
+        draggable={this.state.activeFigureID === id}
+        onDrag={this.dragPointPolygon(id, index)}
       />
     ));
   };
@@ -94,7 +126,7 @@ class FigureEditor extends MapLayer<any> {
                 refs={figure.id}
                 color={"red"}
               />,
-              this.renderPointsPolyline(figure.id, figure.coordinates)
+              this.renderPointsPolygon(figure.id, figure.coordinates)
             ];
           } else {
             return null;

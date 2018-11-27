@@ -5,6 +5,7 @@
   "dependencies": {
     "@skyeer/react-leaflet-custom-control": "^0.0.6",
     "@types/leaflet": "^1.2.14",
+    "@types/lodash": "^4.14.118",
     "@types/react-leaflet": "^1.1.6",
     "autoprefixer": "7.1.6",
     "babel-jest": "20.0.3",
@@ -21,6 +22,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "lodash": "^4.17.11",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
