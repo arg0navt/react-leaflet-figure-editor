@@ -38,8 +38,12 @@ class FigureEditor extends MapLayer<any> {
 
   addPoint = (e: IPoint) : void=> {
     this.setState((prevState: IfigureEditorState) => {
-      const activeFigure = prevState.figureList.find((item: IFigure) => item.id === this.state.activeFigureID);
-      console.log(activeFigure);
+      const activeFigure: IFigure | undefined = prevState.figureList.find((item: IFigure) => item.id === this.state.activeFigureID);
+      if (activeFigure) {
+        if(activeFigure.type === "Polygon") {
+          activeFigure.coordinates.push({lat: e.lat, lng: e.lng});
+        }
+      }
       return prevState;
     });
   }
@@ -48,7 +52,6 @@ class FigureEditor extends MapLayer<any> {
     const activeFigure = this.state.activeFigureID
       ? this.state.figureList.find(item => item.id === this.state.activeFigureID)
       : undefined;
-
     return (
       <Control position="topright">
         <div className="figure-control">

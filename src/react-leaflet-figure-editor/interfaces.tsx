@@ -10,6 +10,6 @@ export interface IfigureEditorState {
 }
 
 export interface IPoint {
-  lag: number;
+  lat: number;
   lng: number;
 }
