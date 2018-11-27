@@ -657,7 +657,7 @@
   justify-content: center;
   padding: 0;
   cursor: pointer;
-  background: #112f41;
+  background: #303841;
   border: 0;
 }
 
@@ -681,23 +681,29 @@
 }
 
 .wrap-settings-type {
-  background: #112f41;
-  border: 1px solid #112f41;
   box-sizing: border-box;
+  background: #36404a;
 }
 
 .settings-type {
   width: calc(100% - 1px);
-  height: 25px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #a8b6c1;
+  justify-content: space-between;
   cursor: pointer;
   border:0;
-  background: #112f41;
-  border-bottom: 1px solid #5b7284;
+  border-bottom: 1px solid #4b5469;
   box-sizing: border-box;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+
+.settings-type p{
+  color: #fff;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
 }
 
 .settings-type:last-child {
@@ -710,56 +716,54 @@
 }
 
 .figure-item {
-  padding: 4px;
+  padding: 5px 8px;
   width: 100%;
   color: #112f41;
   box-sizing: border-box;
-  border-bottom: 1px solid #068587;
+  color: #fff;
+  border-bottom: 1px solid #4b5469;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.figure-item-active {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 3px;
+  background: #18c3b4;
 }
 
 .figure-item:last-child {
   border-bottom: 0;
 }
 
-.figure-item.active {
-  background: #F2B134;
+.figure-item p {
+  margin: 0;
 }
 
 .list-figures {
   margin-top: 10px;
-  background: #4FB99F;
+  background: #36404a;
   box-sizing: border-box;
-  max-height: 105px;
-  overflow-y: auto;
-}
-
-.list-figures::-webkit-scrollbar {
-  width: 5px;
-}
-
-.list-figures::-webkit-scrollbar-button {
-  display: none;
-  width: 5px;
-  height: 0;
-}
-
-.list-figures::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  background-color: #ED554F;
-}
-
-.list-figures::-webkit-scrollbar-track {
-  background-color: #112f41;
 }
 
 .figure-info {
   margin-top: 10px;
   padding: 4px;
   box-sizing: border-box;
-  background: #4FB99F; 
+  background: #36404a; 
 }
 
 .figure-info p {
   margin: 0;
+}
+
+.settings-type p:after {
+  content: "+";
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  line-height: 14px;
 }

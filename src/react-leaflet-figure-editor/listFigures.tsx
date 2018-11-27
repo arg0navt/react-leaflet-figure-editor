@@ -36,10 +36,12 @@ class FigureItem extends React.Component<IPropsItem, any> {
     return (
       <div
         onClick={this.changeFucusFigure(this.props.id)}
-        className={`figure-item ${this.props.focusFigure === this.props.id &&
-          "active"}`}
+        className={`figure-item`}
       >
-        {this.props.type}
+        <p>{this.props.type}</p>
+        {this.props.focusFigure === this.props.id && (
+          <span className="figure-item-active" />
+        )}
       </div>
     );
   }

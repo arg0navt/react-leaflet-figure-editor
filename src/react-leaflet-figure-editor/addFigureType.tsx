@@ -23,21 +23,21 @@ export default class AddFigureType extends React.Component<
           className="settings-type"
           onClick={this.addFigure("Polygon")}
         >
-          Polygon
+          <p>Add Polygon</p>
         </div>
         <div
           key={2}
           className="settings-type"
           onClick={this.addFigure("Cyrcle")}
         >
-          Круг
+          <p>Add Cyrcle</p>
         </div>
         <div
           key={3}
           className="settings-type"
           onClick={this.addFigure("Point")}
         >
-          Точка
+          <p>Add Point</p>
         </div>
       </div>
     );
