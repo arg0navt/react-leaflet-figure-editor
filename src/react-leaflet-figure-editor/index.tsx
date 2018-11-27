@@ -5,7 +5,7 @@ import ListFigures from "./listFigures";
 import InformationAboutFigure from "./information";
 import Control from "@skyeer/react-leaflet-custom-control";
 import { IFigure, IfigureEditorState, IPoint } from "./interfaces";
-import { MapLayer, withLeaflet } from "react-leaflet";
+import { MapLayer, withLeaflet, Polygon } from "react-leaflet";
 
 declare module "react-leaflet" {
   const withLeaflet: <T>(component: T) => T;
@@ -34,40 +34,59 @@ class FigureEditor extends MapLayer<any> {
       activeFigureID: figure.id
     });
 
-  changeActiveFigure = (id: string): void => this.setState({ activeFigureID: id });
+  changeActiveFigure = (id: string): void =>
+    this.setState({ activeFigureID: id });
 
-  addPoint = (e: IPoint) : void=> {
+  addPoint = (e: IPoint): void => {
     this.setState((prevState: IfigureEditorState) => {
-      const activeFigure: IFigure | undefined = prevState.figureList.find((item: IFigure) => item.id === this.state.activeFigureID);
+      const activeFigure: IFigure | undefined = prevState.figureList.find(
+        (item: IFigure) => item.id === this.state.activeFigureID
+      );
       if (activeFigure) {
-        if(activeFigure.type === "Polygon") {
-          activeFigure.coordinates.push({lat: e.lat, lng: e.lng});
+        if (activeFigure.type === "Polygon") {
+          activeFigure.coordinates.push({ lat: e.lat, lng: e.lng });
         }
       }
       return prevState;
     });
-  }
+  };
 
   public render() {
     const activeFigure = this.state.activeFigureID
-      ? this.state.figureList.find(item => item.id === this.state.activeFigureID)
+      ? this.state.figureList.find(
+          item => item.id === this.state.activeFigureID
+        )
       : undefined;
     return (
-      <Control position="topright">
-        <div className="figure-control">
-          <div className="settings-figure-control">
-            <AddFigureType addFigure={this.addFigure} />
-            {this.state.figureList.length > 0 && (
-              <ListFigures
-                figures={this.state.figureList}
-                activeFigureID={this.state.activeFigureID}
-                changeActiveFigure={this.changeActiveFigure}
-              />
-            )}
-            {activeFigure && <InformationAboutFigure {...activeFigure} />}
+      <div>
+        <Control position="topright">
+          <div className="figure-control">
+            <div className="settings-figure-control">
+              <AddFigureType addFigure={this.addFigure} />
+              {this.state.figureList.length > 0 && (
+                <ListFigures
+                  figures={this.state.figureList}
+                  activeFigureID={this.state.activeFigureID}
+                  changeActiveFigure={this.changeActiveFigure}
+                />
+              )}
+              {activeFigure && <InformationAboutFigure {...activeFigure} />}
+            </div>
           </div>
-        </div>
-      </Control>
+        </Control>
+        {this.state.figureList.map((figure: IFigure) => {
+          if (figure.type === "Polygon" && figure.coordinates.length >= 3) {
+            return <Polygon
+              key={figure.id}
+              positions={[...figure.coordinates, figure.coordinates[0]]}
+              refs={figure.id}
+              color={"red"}
+            />
+          } else {
+            return null;
+          }
+        })}
+      </div>
     );
   }
 }

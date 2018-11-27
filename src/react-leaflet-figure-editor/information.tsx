@@ -16,8 +16,8 @@ export default class InformationAboutFigure extends React.Component<
       <div className="figure-info">
         <p>Доступные точки</p>
         <div className="figure-info__points">
-          {this.props.coordinates.map((point: IPoint) => (
-            <p>
+          {this.props.coordinates.map((point: IPoint, index: number) => (
+            <p key={index}>
               {point.lat}, {point.lng}
             </p>
           ))}
