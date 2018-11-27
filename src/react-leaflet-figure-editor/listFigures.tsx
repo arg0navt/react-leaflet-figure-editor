@@ -3,16 +3,16 @@ import { IFigure, IPoint } from "./interfaces";
 
 interface IPropsList {
   figures: IFigure[];
-  focusFigure: string | null;
-  changeFucusFigure: (id: string) => void;
+  activeFigureID: string | null;
+  changeActiveFigure: (id: string) => void;
 }
 
 interface IPropsItem {
   type: string;
   coordinates: IPoint[];
   id: string;
-  focusFigure: string | null;
-  changeFucusFigure: (id: string) => void;
+  activeFigureID: string | null;
+  changeActiveFigure: (id: string) => void;
 }
 
 export default (props: IPropsList) => (
@@ -21,25 +21,25 @@ export default (props: IPropsList) => (
       <FigureItem
         {...item}
         key={item.id}
-        focusFigure={props.focusFigure}
-        changeFucusFigure={props.changeFucusFigure}
+        activeFigureID={props.activeFigureID}
+        changeActiveFigure={props.changeActiveFigure}
       />
     ))}
   </div>
 );
 
 class FigureItem extends React.Component<IPropsItem, any> {
-  changeFucusFigure = type => event => {
-    this.props.changeFucusFigure(this.props.id);
+  changeActiveFigure = type => event => {
+    this.props.changeActiveFigure(this.props.id);
   };
   public render() {
     return (
       <div
-        onClick={this.changeFucusFigure(this.props.id)}
+        onClick={this.changeActiveFigure(this.props.id)}
         className={`figure-item`}
       >
         <p>{this.props.type}</p>
-        {this.props.focusFigure === this.props.id && (
+        {this.props.activeFigureID === this.props.id && (
           <div className="figure-item-active" />
         )}
       </div>

@@ -6,10 +6,10 @@ export interface IFigure {
 
 export interface IfigureEditorState {
   figureList: IFigure[];
-  focusFigure: string | null;
+  activeFigureID: string | null;
 }
 
 export interface IPoint {
+  lag: number;
   lng: number;
-  lon: number;
 }
