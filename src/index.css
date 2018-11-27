@@ -671,11 +671,8 @@
 }
 
 .settings-figure-control {
-  position: absolute;
   width: 180px;
   background: transparent;
-  right: 50px;
-  top: 0;
   box-sizing: border-box;
   border-bottom: 0;
 }
@@ -728,9 +725,10 @@
 }
 
 .figure-item-active {
+  display: block;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 6px;
   margin-right: 3px;
   background: #18c3b4;
 }
@@ -751,13 +749,17 @@
 
 .figure-info {
   margin-top: 10px;
-  padding: 4px;
+  padding: 5px 8px;
   box-sizing: border-box;
   background: #36404a; 
 }
 
 .figure-info p {
   margin: 0;
+  color: #fff;
+  font-size: 11px;
+  margin-bottom: 5px;
+  margin-top: 3px;
 }
 
 .settings-type p:after {
@@ -766,4 +768,20 @@
   color: #fff;
   font-size: 15px;
   line-height: 14px;
+}
+
+.figure-info__points {
+  background: #fff;
+  margin-bottom: 4px;
+}
+.figure-info__points p {
+  font-size: 10px;
+  color: #000;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 4px;
+  box-sizing: border-box;
+  margin: 0;
 }

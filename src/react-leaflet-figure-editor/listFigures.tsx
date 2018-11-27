@@ -40,7 +40,7 @@ class FigureItem extends React.Component<IPropsItem, any> {
       >
         <p>{this.props.type}</p>
         {this.props.focusFigure === this.props.id && (
-          <span className="figure-item-active" />
+          <div className="figure-item-active" />
         )}
       </div>
     );
