@@ -124,9 +124,9 @@ class FigureEditor extends MapLayer<any> {
                 key={figure.id}
                 positions={[...figure.coordinates, figure.coordinates[0]]}
                 refs={figure.id}
-                color={"red"}
+                color={figure.id === this.state.activeFigureID ? "red" : "blue"}
               />,
-              this.renderPointsPolygon(figure.id, figure.coordinates)
+              figure.id === this.state.activeFigureID ? this.renderPointsPolygon(figure.id, figure.coordinates) : null
             ];
           } else {
             return null;
