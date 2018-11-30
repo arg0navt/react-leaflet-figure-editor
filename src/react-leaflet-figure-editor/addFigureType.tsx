@@ -28,9 +28,9 @@ export default class AddFigureType extends React.Component<
         <div
           key={2}
           className="settings-type"
-          onClick={this.addFigure("Cyrcle")}
+          onClick={this.addFigure("Circle")}
         >
-          <p>Add Cyrcle</p>
+          <p>Add Circle</p>
         </div>
         <div
           key={3}
