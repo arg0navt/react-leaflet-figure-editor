@@ -7,7 +7,8 @@ export interface IFigurePolygon {
 export interface ICircle {
   id: string;
   type: string;
-  coordinates: number[][];
+  coordinates: number[];
+  pointRadius: number[];
   radius: number;
   properties: {
     radius_units: string;

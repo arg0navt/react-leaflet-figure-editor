@@ -28,13 +28,14 @@ export default class AddFigureType extends React.Component<
         <div
           key={2}
           className="settings-type"
-          onClick={this.addFigure({type: "Circle", coordinates: [], radius: 0, properties: {radius_units: "m"}})}
+          onClick={this.addFigure({type: "Circle", coordinates: [], pointRadius: [], radius: 0, properties: {radius_units: "m"}})}
         >
           <p>Add Circle</p>
         </div>
         <div
           key={3}
           className="settings-type"
+          onClick={this.addFigure({type: "Point", coordinates: []})}
         >
           <p>Add Point</p>
         </div>
