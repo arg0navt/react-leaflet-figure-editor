@@ -81,8 +81,7 @@ class FigureEditor extends MapLayer<any> {
             }
           }
           return prevState;
-        },
-        () => console.log(this.state)
+        }
       );
     }
   };
@@ -93,14 +92,29 @@ class FigureEditor extends MapLayer<any> {
     );
   };
 
-  deletePointPolygon = (id: string, index: number | null) => {
-    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
-      const activeFigure: any = this.getActiveFigure(prevState);
-      if (activeFigure && index !== null) {
-        activeFigure.coordinates[0] = activeFigure.coordinates[0].filter((item, indexPoint) => indexPoint !== index);
+  deleteFigure = (id: string) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        prevState.figureList = prevState.figureList.filter(
+          item => item.id !== id
+        );
+        return prevState;
       }
-      return prevState;
-    });
+    );
+  };
+
+  deletePointPolygon = (id: string, index: number | null) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure && index !== null) {
+          activeFigure.coordinates[0] = activeFigure.coordinates[0].filter(
+            (item, indexPoint) => indexPoint !== index
+          );
+        }
+        return prevState;
+      }
+    );
   };
 
   dragPointPolygon = (id: string, index: number) => (e: any) => {
@@ -220,13 +234,22 @@ class FigureEditor extends MapLayer<any> {
               {activeFigure ? (
                 activeFigure.type === "Polygon" ? (
                   <InformationAboutPolygon
-                  deletePointPolygon={(id: string, index: number | null) => this.deletePointPolygon(id, index)}
-                  figure={activeFigure} 
+                    deletePointPolygon={(id: string, index: number | null) =>
+                      this.deletePointPolygon(id, index)
+                    }
+                    deleteFigure={(id: string) => this.deleteFigure(id)}
+                    figure={activeFigure}
                   />
                 ) : activeFigure.type === "Circle" ? (
-                  <InformationAboutCircle {...activeFigure} />
+                  <InformationAboutCircle
+                    deleteFigure={(id: string) => this.deleteFigure(id)}
+                    figure={activeFigure}
+                  />
                 ) : activeFigure.type === "Point" ? (
-                  <InformationAboutPoint {...activeFigure} />
+                  <InformationAboutPoint
+                    deleteFigure={(id: string) => this.deleteFigure(id)}
+                    figure={activeFigure}
+                  />
                 ) : null
               ) : null}
             </div>
