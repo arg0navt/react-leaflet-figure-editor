@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
-import { MapLayer, withLeaflet, Polygon, Marker } from "react-leaflet";
+import { MapLayer, withLeaflet, Marker, Polygon } from "react-leaflet";
 import {debounce} from "lodash";
-import { IFigure, IfigureEditorState, IPoint } from "./interfaces";
-import InformationAboutFigure from "./information";
+import { IFigurePolygon, ICircle, IfigureEditorState, IPoint } from "./interfaces";
+import InformationAboutPolygon from "./informationPolygon";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
 import { iconMarker } from "./icons";
@@ -33,13 +33,13 @@ class FigureEditor extends MapLayer<any> {
     return props;
   }
 
-  getActiveFigure = (state: IfigureEditorState): IFigure | undefined => {
+  getActiveFigure = (state: IfigureEditorState): IFigurePolygon | ICircle | undefined => {
     return state.figureList.find(
-      (figure: IFigure) => figure.id === state.activeFigureID
+      (figure: IFigurePolygon | ICircle) => figure.id === state.activeFigureID
     );
   };
 
-  addFigure = (figure: IFigure): void =>
+  addFigure = (figure: IFigurePolygon | ICircle): void =>
     this.setState({
       figureList: [...this.state.figureList, figure],
       activeFigureID: figure.id
@@ -52,12 +52,12 @@ class FigureEditor extends MapLayer<any> {
     if (this.state.clickActivated) {
       this.setState(
         (prevState: IfigureEditorState): IfigureEditorState => {
-          const activeFigure: IFigure | undefined = this.getActiveFigure(
+          const activeFigure: any = this.getActiveFigure(
             prevState
           );
           if (activeFigure) {
             if (activeFigure.type === "Polygon") {
-              activeFigure.coordinates.push({ lat: e.lat, lng: e.lng });
+              activeFigure.coordinates[0].push([e.lat, e.lng ]);
             }
           }
           return prevState;
@@ -69,24 +69,23 @@ class FigureEditor extends MapLayer<any> {
   dragPointPolygon = (id: string, index: number) => (e: any) => {
     this.setState(
       (prevState: IfigureEditorState): IfigureEditorState => {
-        const activeFigure: IFigure | undefined = this.getActiveFigure(
+        const activeFigure: any = this.getActiveFigure(
           prevState
         );
         if (activeFigure) {
           prevState.clickActivated = false;
-          activeFigure.coordinates[index].lat = e.latlng.lat;
-          activeFigure.coordinates[index].lng = e.latlng.lng;
+          activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
         }
         return prevState;
-      }, debounce(() => this.setState({clickActivated: true}), 2000)
+      }, debounce(() => this.setState({clickActivated: true}), 1000)
     );
   };
 
-  renderPointsPolygon = (id: string, coordinates: IPoint[]) => {
-    return coordinates.map((point: IPoint, index: number) => (
+  renderPointsPolygon = (id: string, coordinates: number[][]) => {
+    return coordinates.map((point: number[], index: number) => (
       <Marker
         key={id + index}
-        position={point}
+        position={{lat: point[0], lng: point[1]}}
         icon={iconMarker}
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragPointPolygon(id, index)}
@@ -95,7 +94,7 @@ class FigureEditor extends MapLayer<any> {
   };
 
   public render() {
-    const activeFigure = this.state.activeFigureID
+    const activeFigure : any = this.state.activeFigureID
       ? this.state.figureList.find(
           item => item.id === this.state.activeFigureID
         )
@@ -113,20 +112,20 @@ class FigureEditor extends MapLayer<any> {
                   changeActiveFigure={this.changeActiveFigure}
                 />
               )}
-              {activeFigure && <InformationAboutFigure {...activeFigure} />}
+              {(activeFigure && activeFigure.type === "Polygon") && <InformationAboutPolygon {...activeFigure} />}
             </div>
           </div>
         </Control>
-        {this.state.figureList.map((figure: IFigure) => {
-          if (figure.type === "Polygon" && figure.coordinates.length >= 3) {
+        {this.state.figureList.map((figure: any) => {
+          if (figure.type === "Polygon" && figure.coordinates[0].length >= 3) {
             return [
               <Polygon
                 key={figure.id}
-                positions={[...figure.coordinates, figure.coordinates[0]]}
+                positions={[...figure.coordinates[0], figure.coordinates[0][figure.coordinates[0].length - 1]]}
                 refs={figure.id}
                 color={figure.id === this.state.activeFigureID ? "red" : "blue"}
               />,
-              figure.id === this.state.activeFigureID ? this.renderPointsPolygon(figure.id, figure.coordinates) : null
+              figure.id === this.state.activeFigureID ? this.renderPointsPolygon(figure.id, figure.coordinates[0]) : null
             ];
           } else {
             return null;

@@ -1,11 +1,21 @@
-export interface IFigure {
-  type: string;
-  coordinates: IPoint[];
+export interface IFigurePolygon {
   id: string;
+  type: string;
+  coordinates: number[][][];
+}
+
+export interface ICircle {
+  id: string;
+  type: string;
+  coordinates: number[][];
+  radius: number;
+  properties: {
+    radius_units: string;
+  }
 }
 
 export interface IfigureEditorState {
-  figureList: IFigure[];
+  figureList: (IFigurePolygon | ICircle)[];
   activeFigureID: string | null;
   clickActivated: boolean;
 }

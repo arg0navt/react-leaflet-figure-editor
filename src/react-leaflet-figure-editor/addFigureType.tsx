@@ -1,19 +1,19 @@
 import * as React from "react";
-import { IFigure } from "./interfaces";
+import { IFigurePolygon, ICircle } from "./interfaces";
 
 interface IAddFigureType {
-  addFigure: (figure: IFigure) => void;
+  addFigure: (figure: IFigurePolygon| ICircle) => void;
 }
 
 export default class AddFigureType extends React.Component<
   IAddFigureType,
   any
 > {
-  addFigure = type => event => {
-    const id = Math.random()
+  addFigure = data => event => {
+    data.id = Math.random()
       .toString(36)
       .substr(2, 9);
-    this.props.addFigure({ type, coordinates: [], id });
+    this.props.addFigure(data);
   };
   public render() {
     return (
@@ -21,21 +21,20 @@ export default class AddFigureType extends React.Component<
         <div
           key={1}
           className="settings-type"
-          onClick={this.addFigure("Polygon")}
+          onClick={this.addFigure({type: "Polygon", coordinates: [[]]})}
         >
           <p>Add Polygon</p>
         </div>
         <div
           key={2}
           className="settings-type"
-          onClick={this.addFigure("Circle")}
+          onClick={this.addFigure({type: "Circle", coordinates: [], radius: 0, properties: {radius_units: "km"}})}
         >
           <p>Add Circle</p>
         </div>
         <div
           key={3}
           className="settings-type"
-          onClick={this.addFigure("Point")}
         >
           <p>Add Point</p>
         </div>
