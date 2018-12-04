@@ -10,6 +10,8 @@ import {
   IPoint
 } from "./interfaces";
 import InformationAboutPolygon from "./informationPolygon";
+import InformationAboutCircle from "./informationCircle";
+import InformationAboutPoint from "./informationPoint";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
 import { iconMarker, iconMarkerNotActive } from "./icons";
@@ -147,14 +149,16 @@ class FigureEditor extends MapLayer<any> {
         return prevState;
       }
     );
-  }
+  };
 
   renderPointsPolygon = (id: string, coordinates: number[][]) => {
     return coordinates.map((point: number[], index: number) => (
       <Marker
         key={id + index}
         position={{ lat: point[0], lng: point[1] }}
-        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
+        icon={
+          id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+        }
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragPointPolygon(id, index)}
       />
@@ -166,14 +170,18 @@ class FigureEditor extends MapLayer<any> {
       <Marker
         key={id + "center"}
         position={{ lat: figure.coordinates[0], lng: figure.coordinates[1] }}
-        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
+        icon={
+          id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+        }
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragCircleCenter(id)}
       />,
       <Marker
         key={id + "radius"}
         position={{ lat: figure.pointRadius[0], lng: figure.pointRadius[1] }}
-        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
+        icon={
+          id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+        }
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragCircleRadius(id)}
       />
@@ -199,9 +207,15 @@ class FigureEditor extends MapLayer<any> {
                   changeActiveFigure={this.changeActiveFigure}
                 />
               )}
-              {activeFigure && activeFigure.type === "Polygon" && (
-                <InformationAboutPolygon {...activeFigure} />
-              )}
+              {activeFigure ? (
+                activeFigure.type === "Polygon" ? (
+                  <InformationAboutPolygon {...activeFigure} />
+                ) : activeFigure.type === "Circle" ? (
+                  <InformationAboutCircle {...activeFigure} />
+                ) : activeFigure.type === "Point" ? (
+                  <InformationAboutPoint {...activeFigure} />
+                ) : null
+              ) : null}
             </div>
           </div>
         </Control>
@@ -234,16 +248,22 @@ class FigureEditor extends MapLayer<any> {
               this.renderPointsCircle(figure.id, figure)
             ];
           } else if (figure.type === "Point" && figure.coordinates.length) {
-            return <Marker
-              key={figure.id}
-              position={{
-                lat: figure.coordinates[0],
-                lng: figure.coordinates[1]
-              }}
-              icon={figure.id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
-              draggable={this.state.activeFigureID === figure.id}
-              onDrag={this.dragPoint(figure.id)}
-            />;
+            return (
+              <Marker
+                key={figure.id}
+                position={{
+                  lat: figure.coordinates[0],
+                  lng: figure.coordinates[1]
+                }}
+                icon={
+                  figure.id === this.state.activeFigureID
+                    ? iconMarker
+                    : iconMarkerNotActive
+                }
+                draggable={this.state.activeFigureID === figure.id}
+                onDrag={this.dragPoint(figure.id)}
+              />
+            );
           } else {
             return null;
           }

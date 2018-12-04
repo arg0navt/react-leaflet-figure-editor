@@ -8,7 +8,7 @@ export default class InformationAboutPolygon extends React.Component<
   public render() {
     return (
       <div className="figure-info">{this.props.coordinates.length ? [
-        <p key="active_points_text">Доступные точки</p>,
+        <p key="active_points_text">Points</p>,
         <div key="active_points" className="figure-info__points">
           {this.props.coordinates[0].map((point: number[], index: number) => (
             <p key={index}>
@@ -18,7 +18,7 @@ export default class InformationAboutPolygon extends React.Component<
         </div>
       ] : (
         <p key="dont_have_active_points" style={{ marginBottom: 0 }}>
-          Нет активных точек
+          Don't have data
         </p>
       )}</div>
     )
