@@ -2,7 +2,6 @@ import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
 import { MapLayer, withLeaflet, Marker, Polygon, Circle } from "react-leaflet";
-import { debounce } from "lodash";
 import {
   IFigurePolygon,
   ICircle,
@@ -24,6 +23,10 @@ declare module "react-leaflet" {
 }
 
 class FigureEditor extends MapLayer<any> {
+  static defaultProps = {
+    calbackChange: () => {}
+  }
+
   state: IfigureEditorState = {
     figureList: [],
     activeFigureID: null,
@@ -32,6 +35,7 @@ class FigureEditor extends MapLayer<any> {
 
   componentDidMount() {
     this.props.leaflet.map.on("click", e => {
+      console.log(e);
       this.addPoint(e.latlng);
     });
   }
@@ -52,7 +56,7 @@ class FigureEditor extends MapLayer<any> {
     this.setState({
       figureList: [...this.state.figureList, figure],
       activeFigureID: figure.id
-    });
+    }, () => this.props.calbackChange(this.state));
 
   changeActiveFigure = (id: string): void =>
     this.setState({ activeFigureID: id });
@@ -81,7 +85,7 @@ class FigureEditor extends MapLayer<any> {
             }
           }
           return prevState;
-        }
+        }, () => this.props.calbackChange(this.state)
       );
     }
   };
@@ -99,7 +103,7 @@ class FigureEditor extends MapLayer<any> {
           item => item.id !== id
         );
         return prevState;
-      }
+      }, () => this.props.calbackChange(this.state)
     );
   };
 
@@ -113,7 +117,7 @@ class FigureEditor extends MapLayer<any> {
           );
         }
         return prevState;
-      }
+      }, () => this.props.calbackChange(this.state)
     );
   };
 
@@ -125,7 +129,7 @@ class FigureEditor extends MapLayer<any> {
         activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
       }
       return prevState;
-    }, debounce(() => this.setState({ clickActivated: true }), 1000));
+    }, () => this.props.calbackChange(this.state));
   };
 
   dragCircleCenter = (id: string) => (e: any) => {
@@ -142,7 +146,7 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
         }
         return prevState;
-      }
+      }, () => this.props.calbackChange(this.state)
     );
   };
 
@@ -159,7 +163,7 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.radius = radius;
         }
         return prevState;
-      }
+      }, () => this.props.calbackChange(this.state)
     );
   };
 
@@ -171,7 +175,7 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
         }
         return prevState;
-      }
+      }, () => this.props.calbackChange(this.state)
     );
   };
 

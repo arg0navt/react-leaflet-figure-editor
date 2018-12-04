@@ -17,6 +17,7 @@
     "jsx-no-string-ref": false,
     "interface-name": false,
     "array-type": [true, "array"],
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "no-empty": false
   }
 }
