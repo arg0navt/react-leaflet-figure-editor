@@ -1,9 +1,14 @@
 import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
-import { MapLayer, withLeaflet, Marker, Polygon } from "react-leaflet";
-import {debounce} from "lodash";
-import { IFigurePolygon, ICircle, IfigureEditorState, IPoint } from "./interfaces";
+import { MapLayer, withLeaflet, Marker, Polygon, Circle } from "react-leaflet";
+import { debounce } from "lodash";
+import {
+  IFigurePolygon,
+  ICircle,
+  IfigureEditorState,
+  IPoint
+} from "./interfaces";
 import InformationAboutPolygon from "./informationPolygon";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
@@ -20,7 +25,7 @@ class FigureEditor extends MapLayer<any> {
   state: IfigureEditorState = {
     figureList: [],
     activeFigureID: null,
-    clickActivated: true,
+    clickActivated: true
   };
 
   componentDidMount() {
@@ -33,7 +38,9 @@ class FigureEditor extends MapLayer<any> {
     return props;
   }
 
-  getActiveFigure = (state: IfigureEditorState): IFigurePolygon | ICircle | undefined => {
+  getActiveFigure = (
+    state: IfigureEditorState
+  ): IFigurePolygon | ICircle | undefined => {
     return state.figureList.find(
       (figure: IFigurePolygon | ICircle) => figure.id === state.activeFigureID
     );
@@ -52,40 +59,48 @@ class FigureEditor extends MapLayer<any> {
     if (this.state.clickActivated) {
       this.setState(
         (prevState: IfigureEditorState): IfigureEditorState => {
-          const activeFigure: any = this.getActiveFigure(
-            prevState
-          );
+          const activeFigure: any = this.getActiveFigure(prevState);
           if (activeFigure) {
             if (activeFigure.type === "Polygon") {
-              activeFigure.coordinates[0].push([e.lat, e.lng ]);
+              activeFigure.coordinates[0].push([e.lat, e.lng]);
+            } else if (activeFigure.type === "Circle") {
+              if (activeFigure.coordinates.length) {
+                const radius = this.countRadius(activeFigure.coordinates, [e.lat, e.lng]);
+                activeFigure.radius = radius;
+              } else {
+                activeFigure.coordinates = [e.lat, e.lng];
+              }
             }
           }
           return prevState;
-        }
+        },
+        () => console.log(this.state)
       );
     }
   };
 
+  countRadius = (center: number[], point: number[]): number => {
+    return L.latLng({ lat: center[0], lng: center[1] }).distanceTo(
+        L.latLng({ lat: point[0], lng: point[1] })
+      )
+  };
+
   dragPointPolygon = (id: string, index: number) => (e: any) => {
-    this.setState(
-      (prevState: IfigureEditorState): IfigureEditorState => {
-        const activeFigure: any = this.getActiveFigure(
-          prevState
-        );
-        if (activeFigure) {
-          prevState.clickActivated = false;
-          activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
-        }
-        return prevState;
-      }, debounce(() => this.setState({clickActivated: true}), 1000)
-    );
+    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
+      const activeFigure: any = this.getActiveFigure(prevState);
+      if (activeFigure) {
+        prevState.clickActivated = false;
+        activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
+      }
+      return prevState;
+    }, debounce(() => this.setState({ clickActivated: true }), 1000));
   };
 
   renderPointsPolygon = (id: string, coordinates: number[][]) => {
     return coordinates.map((point: number[], index: number) => (
       <Marker
         key={id + index}
-        position={{lat: point[0], lng: point[1]}}
+        position={{ lat: point[0], lng: point[1] }}
         icon={iconMarker}
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragPointPolygon(id, index)}
@@ -94,7 +109,7 @@ class FigureEditor extends MapLayer<any> {
   };
 
   public render() {
-    const activeFigure : any = this.state.activeFigureID
+    const activeFigure: any = this.state.activeFigureID
       ? this.state.figureList.find(
           item => item.id === this.state.activeFigureID
         )
@@ -112,7 +127,9 @@ class FigureEditor extends MapLayer<any> {
                   changeActiveFigure={this.changeActiveFigure}
                 />
               )}
-              {(activeFigure && activeFigure.type === "Polygon") && <InformationAboutPolygon {...activeFigure} />}
+              {activeFigure && activeFigure.type === "Polygon" && (
+                <InformationAboutPolygon {...activeFigure} />
+              )}
             </div>
           </div>
         </Control>
@@ -121,12 +138,26 @@ class FigureEditor extends MapLayer<any> {
             return [
               <Polygon
                 key={figure.id}
-                positions={[...figure.coordinates[0], figure.coordinates[0][figure.coordinates[0].length - 1]]}
+                positions={[
+                  ...figure.coordinates[0],
+                  figure.coordinates[0][figure.coordinates[0].length - 1]
+                ]}
                 refs={figure.id}
                 color={figure.id === this.state.activeFigureID ? "red" : "blue"}
               />,
-              figure.id === this.state.activeFigureID ? this.renderPointsPolygon(figure.id, figure.coordinates[0]) : null
+              figure.id === this.state.activeFigureID
+                ? this.renderPointsPolygon(figure.id, figure.coordinates[0])
+                : null
             ];
+          } else if (figure.type === "Circle" && figure.coordinates.length && figure.radius) {
+            return (
+              <Circle
+                key={figure.id}
+                center={figure.coordinates}
+                radius={figure.radius}
+                color={figure.id === this.state.activeFigureID ? "red" : "blue"} 
+              />
+            )
           } else {
             return null;
           }
