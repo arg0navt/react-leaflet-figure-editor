@@ -93,6 +93,16 @@ class FigureEditor extends MapLayer<any> {
     );
   };
 
+  deletePointPolygon = (id: string, index: number | null) => {
+    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
+      const activeFigure: any = this.getActiveFigure(prevState);
+      if (activeFigure && index !== null) {
+        activeFigure.coordinates[0] = activeFigure.coordinates[0].filter((item, indexPoint) => indexPoint !== index);
+      }
+      return prevState;
+    });
+  };
+
   dragPointPolygon = (id: string, index: number) => (e: any) => {
     this.setState((prevState: IfigureEditorState): IfigureEditorState => {
       const activeFigure: any = this.getActiveFigure(prevState);
@@ -209,7 +219,10 @@ class FigureEditor extends MapLayer<any> {
               )}
               {activeFigure ? (
                 activeFigure.type === "Polygon" ? (
-                  <InformationAboutPolygon {...activeFigure} />
+                  <InformationAboutPolygon
+                  deletePointPolygon={(id: string, index: number | null) => this.deletePointPolygon(id, index)}
+                  figure={activeFigure} 
+                  />
                 ) : activeFigure.type === "Circle" ? (
                   <InformationAboutCircle {...activeFigure} />
                 ) : activeFigure.type === "Point" ? (

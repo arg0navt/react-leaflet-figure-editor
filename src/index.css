@@ -786,4 +786,11 @@
   padding: 2px 4px;
   box-sizing: border-box;
   margin: 0;
+  cursor: pointer;
+}
+.figure-info button {
+  margin: 3px 0;
+  background: #17c3b4;
+  border: 0 !important;
+  cursor: pointer;
 }
