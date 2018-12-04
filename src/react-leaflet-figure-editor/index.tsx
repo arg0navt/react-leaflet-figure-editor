@@ -101,29 +101,39 @@ class FigureEditor extends MapLayer<any> {
   };
 
   dragCircleCenter = (id: string) => (e: any) => {
-    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
-      const activeFigure: any = this.getActiveFigure(prevState);
-      if (activeFigure) {
-        activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          activeFigure.pointRadius = [
+            activeFigure.pointRadius[0] -
+              (activeFigure.coordinates[0] - e.latlng.lat),
+            activeFigure.pointRadius[1] -
+              (activeFigure.coordinates[1] - e.latlng.lng)
+          ];
+          activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
+        }
+        return prevState;
       }
-      return prevState;
-    })
-  }
+    );
+  };
 
   dragCircleRadius = (id: string) => (e: any) => {
-    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
-      const activeFigure: any = this.getActiveFigure(prevState);
-      if (activeFigure) {
-        const radius = this.countRadius(activeFigure.coordinates, [
-          e.latlng.lat,
-          e.latlng.lng
-        ]);
-        activeFigure.pointRadius = [e.latlng.lat, e.latlng.lng];
-        activeFigure.radius = radius;
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          const radius = this.countRadius(activeFigure.coordinates, [
+            e.latlng.lat,
+            e.latlng.lng
+          ]);
+          activeFigure.pointRadius = [e.latlng.lat, e.latlng.lng];
+          activeFigure.radius = radius;
+        }
+        return prevState;
       }
-      return prevState;
-    })
-  }
+    );
+  };
 
   renderPointsPolygon = (id: string, coordinates: number[][]) => {
     return coordinates.map((point: number[], index: number) => (
