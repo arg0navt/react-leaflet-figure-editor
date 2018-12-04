@@ -12,7 +12,7 @@ import {
 import InformationAboutPolygon from "./informationPolygon";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
-import { iconMarker } from "./icons";
+import { iconMarker, iconMarkerNotActive } from "./icons";
 
 declare module "react-leaflet" {
   const withLeaflet: <T>(component: T) => T;
@@ -74,6 +74,8 @@ class FigureEditor extends MapLayer<any> {
               } else {
                 activeFigure.coordinates = [e.lat, e.lng];
               }
+            } else if (activeFigure.type === "Point") {
+              activeFigure.coordinates = [e.lat, e.lng];
             }
           }
           return prevState;
@@ -135,12 +137,24 @@ class FigureEditor extends MapLayer<any> {
     );
   };
 
+  dragPoint = (id: string) => (e: any) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
+        }
+        return prevState;
+      }
+    );
+  }
+
   renderPointsPolygon = (id: string, coordinates: number[][]) => {
     return coordinates.map((point: number[], index: number) => (
       <Marker
         key={id + index}
         position={{ lat: point[0], lng: point[1] }}
-        icon={iconMarker}
+        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragPointPolygon(id, index)}
       />
@@ -152,14 +166,14 @@ class FigureEditor extends MapLayer<any> {
       <Marker
         key={id + "center"}
         position={{ lat: figure.coordinates[0], lng: figure.coordinates[1] }}
-        icon={iconMarker}
+        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragCircleCenter(id)}
       />,
       <Marker
         key={id + "radius"}
         position={{ lat: figure.pointRadius[0], lng: figure.pointRadius[1] }}
-        icon={iconMarker}
+        icon={id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
         draggable={this.state.activeFigureID === id}
         onDrag={this.dragCircleRadius(id)}
       />
@@ -203,9 +217,7 @@ class FigureEditor extends MapLayer<any> {
                 refs={figure.id}
                 color={figure.id === this.state.activeFigureID ? "red" : "blue"}
               />,
-              figure.id === this.state.activeFigureID
-                ? this.renderPointsPolygon(figure.id, figure.coordinates[0])
-                : null
+              this.renderPointsPolygon(figure.id, figure.coordinates[0])
             ];
           } else if (
             figure.type === "Circle" &&
@@ -219,10 +231,19 @@ class FigureEditor extends MapLayer<any> {
                 radius={figure.radius}
                 color={figure.id === this.state.activeFigureID ? "red" : "blue"}
               />,
-              figure.id === this.state.activeFigureID
-                ? this.renderPointsCircle(figure.id, figure)
-                : null
+              this.renderPointsCircle(figure.id, figure)
             ];
+          } else if (figure.type === "Point" && figure.coordinates.length) {
+            return <Marker
+              key={figure.id}
+              position={{
+                lat: figure.coordinates[0],
+                lng: figure.coordinates[1]
+              }}
+              icon={figure.id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive}
+              draggable={this.state.activeFigureID === figure.id}
+              onDrag={this.dragPoint(figure.id)}
+            />;
           } else {
             return null;
           }

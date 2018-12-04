@@ -25,3 +25,9 @@ export interface IPoint {
   lat: number;
   lng: number;
 }
+
+export interface IPointGeo {
+  id: string;
+  type: string;
+  coordinates: number[];
+}

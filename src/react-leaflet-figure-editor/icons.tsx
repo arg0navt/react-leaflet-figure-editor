@@ -5,3 +5,9 @@ export const iconMarker = L.icon({
   iconSize: [20, 20],
   className: "iconMarker"
 });
+
+export const iconMarkerNotActive = L.icon({
+  iconUrl: `/img/iconMarkerNotActive.svg`,
+  iconSize: [10, 10],
+  className: "iconMarker"
+});
