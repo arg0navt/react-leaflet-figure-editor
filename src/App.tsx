@@ -2,8 +2,6 @@ import * as React from "react";
 import FigureEditor from "./react-leaflet-figure-editor";
 import { Map, TileLayer } from "react-leaflet";
 
-import "./index.css";
-
 class App extends React.Component {
   public render() {
     return (

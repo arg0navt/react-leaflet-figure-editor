@@ -15,6 +15,8 @@ import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
 import { iconMarker, iconMarkerNotActive } from "./icons";
 
+import "./index.css";
+
 declare module "react-leaflet" {
   const withLeaflet: <T>(component: T) => T;
   interface ILeafletContext {
