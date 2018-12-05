@@ -1,7 +1,7 @@
 {
   "name": "react-leaflet-figure-editor",
-  "version": "0.2.0",
-  "private": true,
+  "version": "0.2.1",
+  "private": false,
   "main": "lib/react-leaflet-figure-editor/index.js",
   "dependencies": {
     "@skyeer/react-leaflet-custom-control": "^0.0.6",
@@ -12,7 +12,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "lib": "tsc && copyfiles src/react-leaflet-figure-editor/*.css lib/react-leaflet-figure-editor"
+    "lib": "tsc && copyfiles -f src/react-leaflet-figure-editor/*.css lib/react-leaflet-figure-editor"
   },
   "devDependencies": {
     "resolve": "1.6.0",
@@ -115,3 +115,4 @@
       "react-app"
     ]
   }
+}
