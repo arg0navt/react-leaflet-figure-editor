@@ -1,9 +1,9 @@
 <h1 align="center" size="40">React-leaflet-figure-editor</h1>
-<div align="center">
 
+<div align="center">
+  
 [![Build Status](https://travis-ci.org/argonavt11/react-leaflet-figure-editor.svg?branch=master)](https://travis-ci.org/argonavt11/react-leaflet-figure-editor)
 [![CircleCI](https://circleci.com/gh/argonavt11/react-leaflet-figure-editor.svg?style=svg)](https://circleci.com/gh/argonavt11)
-[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)](https://github.com/argonavt11/react-leaflet-figure-editor)
 
 ![](https://github.com/argonavt11/react-leaflet-figure-editor/blob/master/public/demo.gif?raw=true)
 
