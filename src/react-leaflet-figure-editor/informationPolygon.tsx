@@ -7,7 +7,7 @@ interface IInformationAboutPolygon {
 
 export default class InformationAboutPolygon extends React.Component<
   { 
-    deletePointPolygon: (id: string, index: number | null) => void;
+    deletePolygonPoint: (index: number | null) => void;
     deleteFigure: (id: string) => void;
     figure: IFigurePolygon 
   },
@@ -21,7 +21,7 @@ export default class InformationAboutPolygon extends React.Component<
     this.setState({ focusPoint: id });
   
   deletePoint = () => (e: any) => {
-    this.props.deletePointPolygon(this.props.figure.id, this.state.focusPoint);
+    this.props.deletePolygonPoint(this.state.focusPoint);
     this.setState({focusPoint: null});
   }
 

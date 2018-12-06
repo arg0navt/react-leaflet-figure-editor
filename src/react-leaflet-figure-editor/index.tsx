@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
-import { MapLayer, withLeaflet, Marker, Polygon, Circle } from "react-leaflet";
+import { MapLayer, withLeaflet, Marker, Polygon, Circle, Polyline } from "react-leaflet";
 import {
   IFigurePolygon,
   ICircle,
@@ -27,17 +27,15 @@ declare module "react-leaflet" {
 class FigureEditor extends MapLayer<any> {
   static defaultProps = {
     calbackChange: () => {}
-  }
+  };
 
   state: IfigureEditorState = {
     figureList: [],
-    activeFigureID: null,
-    clickActivated: true
+    activeFigureID: null
   };
 
   componentDidMount() {
     this.props.leaflet.map.on("click", e => {
-      console.log(e);
       this.addPoint(e.latlng);
     });
   }
@@ -55,41 +53,49 @@ class FigureEditor extends MapLayer<any> {
   };
 
   addFigure = (figure: IFigurePolygon | ICircle): void =>
-    this.setState({
-      figureList: [...this.state.figureList, figure],
-      activeFigureID: figure.id
-    }, () => this.props.calbackChange(this.state));
+    this.setState(
+      {
+        figureList: [...this.state.figureList, figure],
+        activeFigureID: figure.id
+      },
+      () => this.props.calbackChange(this.state)
+    );
 
   changeActiveFigure = (id: string): void =>
     this.setState({ activeFigureID: id });
 
   addPoint = (e: IPoint): void => {
-    if (this.state.clickActivated) {
-      this.setState(
-        (prevState: IfigureEditorState): IfigureEditorState => {
-          const activeFigure: any = this.getActiveFigure(prevState);
-          if (activeFigure) {
-            if (activeFigure.type === "Polygon") {
-              activeFigure.coordinates[0].push([e.lat, e.lng]);
-            } else if (activeFigure.type === "Circle") {
-              if (activeFigure.coordinates.length) {
-                const radius = this.countRadius(activeFigure.coordinates, [
-                  e.lat,
-                  e.lng
-                ]);
-                activeFigure.pointRadius = [e.lat, e.lng];
-                activeFigure.radius = radius;
-              } else {
-                activeFigure.coordinates = [e.lat, e.lng];
-              }
-            } else if (activeFigure.type === "Point") {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          if (activeFigure.type === "Polygon") {
+            activeFigure.coordinates[0].push([e.lat, e.lng]);
+          } else if (activeFigure.type === "Circle") {
+            if (activeFigure.coordinates.length) {
+              const radius = this.countRadius(activeFigure.coordinates, [
+                e.lat,
+                e.lng
+              ]);
+              activeFigure.pointRadius = [e.lat, e.lng];
+              activeFigure.radius = radius;
+            } else {
               activeFigure.coordinates = [e.lat, e.lng];
             }
+          } else if (activeFigure.type === "LineString") {
+            if (activeFigure.coordinates[0] && !activeFigure.coordinates[1]) {
+              activeFigure.coordinates[1] = [e.lat, e.lng];
+            } else if (!activeFigure.coordinates[0]) {
+              activeFigure.coordinates[0] = [e.lat, e.lng];
+            }
+          } else if (activeFigure.type === "Point") {
+            activeFigure.coordinates = [e.lat, e.lng];
           }
-          return prevState;
-        }, () => this.props.calbackChange(this.state)
-      );
-    }
+        }
+        return prevState;
+      },
+      () => this.props.calbackChange(this.state)
+    );
   };
 
   countRadius = (center: number[], point: number[]): number => {
@@ -105,11 +111,12 @@ class FigureEditor extends MapLayer<any> {
           item => item.id !== id
         );
         return prevState;
-      }, () => this.props.calbackChange(this.state)
+      },
+      () => this.props.calbackChange(this.state)
     );
   };
 
-  deletePointPolygon = (id: string, index: number | null) => {
+  deletePolygonPoint = (index: number | null) => {
     this.setState(
       (prevState: IfigureEditorState): IfigureEditorState => {
         const activeFigure: any = this.getActiveFigure(prevState);
@@ -119,19 +126,22 @@ class FigureEditor extends MapLayer<any> {
           );
         }
         return prevState;
-      }, () => this.props.calbackChange(this.state)
+      },
+      () => this.props.calbackChange(this.state)
     );
   };
 
-  dragPointPolygon = (id: string, index: number) => (e: any) => {
-    this.setState((prevState: IfigureEditorState): IfigureEditorState => {
-      const activeFigure: any = this.getActiveFigure(prevState);
-      if (activeFigure) {
-        prevState.clickActivated = false;
-        activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
-      }
-      return prevState;
-    }, () => this.props.calbackChange(this.state));
+  dragPolygonPoint = (id: string, index: number) => (e: any) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          activeFigure.coordinates[0][index] = [e.latlng.lat, e.latlng.lng];
+        }
+        return prevState;
+      },
+      () => this.props.calbackChange(this.state)
+    );
   };
 
   dragCircleCenter = (id: string) => (e: any) => {
@@ -148,7 +158,8 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
         }
         return prevState;
-      }, () => this.props.calbackChange(this.state)
+      },
+      () => this.props.calbackChange(this.state)
     );
   };
 
@@ -165,11 +176,25 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.radius = radius;
         }
         return prevState;
-      }, () => this.props.calbackChange(this.state)
+      },
+      () => this.props.calbackChange(this.state)
     );
   };
 
-  dragPoint = (id: string) => (e: any) => {
+  dragLineStringPoint = (index: number)  => (e: any) => {
+    this.setState(
+      (prevState: IfigureEditorState): IfigureEditorState => {
+        const activeFigure: any = this.getActiveFigure(prevState);
+        if (activeFigure) {
+          activeFigure.coordinates = index === 0 ? [[e.latlng.lat, e.latlng.lng], activeFigure.coordinates[1]] : [activeFigure.coordinates[0], [e.latlng.lat, e.latlng.lng]];
+        }
+        return prevState;
+      },
+      () => this.props.calbackChange(this.state)
+    );
+  }
+
+  dragPoint = () => (e: any) => {
     this.setState(
       (prevState: IfigureEditorState): IfigureEditorState => {
         const activeFigure: any = this.getActiveFigure(prevState);
@@ -177,11 +202,12 @@ class FigureEditor extends MapLayer<any> {
           activeFigure.coordinates = [e.latlng.lat, e.latlng.lng];
         }
         return prevState;
-      }, () => this.props.calbackChange(this.state)
+      },
+      () => this.props.calbackChange(this.state)
     );
   };
 
-  renderPointsPolygon = (id: string, coordinates: number[][]) => {
+  renderPolygonPoints = (id: string, coordinates: number[][]) => {
     return coordinates.map((point: number[], index: number) => (
       <Marker
         key={id + index}
@@ -190,33 +216,64 @@ class FigureEditor extends MapLayer<any> {
           id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
         }
         draggable={this.state.activeFigureID === id}
-        onDrag={this.dragPointPolygon(id, index)}
+        onDrag={this.dragPolygonPoint(id, index)}
       />
     ));
   };
 
-  renderPointsCircle = (id: string, figure: any) => {
+  renderCirclePoints = (id: string, figure: any) => {
     return [
-      <Marker
-        key={id + "center"}
-        position={{ lat: figure.coordinates[0], lng: figure.coordinates[1] }}
-        icon={
-          id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
-        }
-        draggable={this.state.activeFigureID === id}
-        onDrag={this.dragCircleCenter(id)}
-      />,
-      <Marker
-        key={id + "radius"}
-        position={{ lat: figure.pointRadius[0], lng: figure.pointRadius[1] }}
-        icon={
-          id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
-        }
-        draggable={this.state.activeFigureID === id}
-        onDrag={this.dragCircleRadius(id)}
-      />
+      figure.coordinates.length ? (
+        <Marker
+          key={id + "center"}
+          position={{ lat: figure.coordinates[0], lng: figure.coordinates[1] }}
+          icon={
+            id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+          }
+          draggable={this.state.activeFigureID === id}
+          onDrag={this.dragCircleCenter(id)}
+        />
+      ) : null,
+      figure.pointRadius.length ? (
+        <Marker
+          key={id + "radius"}
+          position={{ lat: figure.pointRadius[0], lng: figure.pointRadius[1] }}
+          icon={
+            id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+          }
+          draggable={this.state.activeFigureID === id}
+          onDrag={this.dragCircleRadius(id)}
+        />
+      ) : null
     ];
   };
+
+  renderLineStringPoints = (id: string, coordinates: number[][]) => {
+    return [
+      coordinates[0] && coordinates[0][0] && coordinates[0][1] ? (
+        <Marker
+          key={id + "first"}
+          position={{ lat: coordinates[0][0], lng: coordinates[0][1] }}
+          icon={
+            id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+          }
+          draggable={this.state.activeFigureID === id}
+          onDrag={this.dragLineStringPoint(0)}
+        />
+      ) : null,
+      coordinates[1] && coordinates[1][0] && coordinates[1][1] ? (
+        <Marker
+          key={id + "second"}
+          position={{ lat: coordinates[1][0], lng: coordinates[1][1] }}
+          icon={
+            id === this.state.activeFigureID ? iconMarker : iconMarkerNotActive
+          }
+          draggable={this.state.activeFigureID === id}
+          onDrag={this.dragLineStringPoint(1)}
+        />
+      ) : null
+    ]
+  }
 
   public render() {
     const activeFigure: any = this.state.activeFigureID
@@ -240,8 +297,8 @@ class FigureEditor extends MapLayer<any> {
               {activeFigure ? (
                 activeFigure.type === "Polygon" ? (
                   <InformationAboutPolygon
-                    deletePointPolygon={(id: string, index: number | null) =>
-                      this.deletePointPolygon(id, index)
+                    deletePolygonPoint={(index: number | null) =>
+                      this.deletePolygonPoint(index)
                     }
                     deleteFigure={(id: string) => this.deleteFigure(id)}
                     figure={activeFigure}
@@ -262,33 +319,48 @@ class FigureEditor extends MapLayer<any> {
           </div>
         </Control>
         {this.state.figureList.map((figure: any) => {
-          if (figure.type === "Polygon" && figure.coordinates[0].length >= 3) {
+          if (figure.type === "Polygon") {
             return [
-              <Polygon
-                key={figure.id}
-                positions={[
-                  ...figure.coordinates[0],
-                  figure.coordinates[0][figure.coordinates[0].length - 1]
-                ]}
-                refs={figure.id}
-                color={figure.id === this.state.activeFigureID ? "red" : "blue"}
-              />,
-              this.renderPointsPolygon(figure.id, figure.coordinates[0])
+              figure.coordinates[0].length >= 2 ? (
+                <Polygon
+                  key={figure.id}
+                  positions={[
+                    ...figure.coordinates[0],
+                    figure.coordinates[0][figure.coordinates[0].length - 1]
+                  ]}
+                  refs={figure.id}
+                  color={
+                    figure.id === this.state.activeFigureID ? "red" : "blue"
+                  }
+                />
+              ) : null,
+              this.renderPolygonPoints(figure.id, figure.coordinates[0])
             ];
-          } else if (
-            figure.type === "Circle" &&
-            figure.coordinates.length &&
-            figure.radius
-          ) {
+          } else if (figure.type === "Circle") {
             return [
-              <Circle
-                key={figure.id}
-                center={figure.coordinates}
-                radius={figure.radius}
-                color={figure.id === this.state.activeFigureID ? "red" : "blue"}
-              />,
-              this.renderPointsCircle(figure.id, figure)
+              figure.coordinates.length && figure.radius ? (
+                <Circle
+                  key={figure.id}
+                  center={figure.coordinates}
+                  radius={figure.radius}
+                  color={
+                    figure.id === this.state.activeFigureID ? "red" : "blue"
+                  }
+                />
+              ) : null,
+              this.renderCirclePoints(figure.id, figure)
             ];
+          } else if (figure.type === "LineString") {
+            return [
+              figure.coordinates.length === 2 ? <Polyline
+                key={figure.id}
+                positions={figure.coordinates}
+                color={
+                  figure.id === this.state.activeFigureID ? "red" : "blue"
+                }
+              /> : null,
+              this.renderLineStringPoints(figure.id, figure.coordinates)
+            ]
           } else if (figure.type === "Point" && figure.coordinates.length) {
             return (
               <Marker
@@ -303,7 +375,7 @@ class FigureEditor extends MapLayer<any> {
                     : iconMarkerNotActive
                 }
                 draggable={this.state.activeFigureID === figure.id}
-                onDrag={this.dragPoint(figure.id)}
+                onDrag={this.dragPoint()}
               />
             );
           } else {

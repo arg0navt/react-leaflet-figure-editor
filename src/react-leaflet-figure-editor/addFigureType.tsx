@@ -1,8 +1,8 @@
 import * as React from "react";
-import { IFigurePolygon, ICircle } from "./interfaces";
+import { IFigurePolygon, ICircle, IPoint, ILineString } from "./interfaces";
 
 interface IAddFigureType {
-  addFigure: (figure: IFigurePolygon| ICircle) => void;
+  addFigure: (figure: IFigurePolygon| ICircle | IPoint | ILineString) => void;
 }
 
 export default class AddFigureType extends React.Component<
@@ -34,6 +34,13 @@ export default class AddFigureType extends React.Component<
         </div>
         <div
           key={3}
+          className="settings-type"
+          onClick={this.addFigure({type: "LineString", coordinates: []})}
+        >
+          <p>Add LineString</p>
+        </div>
+        <div
+          key={4}
           className="settings-type"
           onClick={this.addFigure({type: "Point", coordinates: []})}
         >

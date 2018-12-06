@@ -18,7 +18,6 @@ export interface ICircle {
 export interface IfigureEditorState {
   figureList: (IFigurePolygon | ICircle)[];
   activeFigureID: string | null;
-  clickActivated: boolean;
 }
 
 export interface IPoint {
@@ -30,4 +29,10 @@ export interface IPointGeo {
   id: string;
   type: string;
   coordinates: number[];
+}
+
+export interface ILineString {
+  id: string;
+  type: string;
+  coordinates: number[][];
 }
