@@ -1,7 +1,14 @@
 import * as React from "react";
 import * as L from "leaflet";
 import Control from "@skyeer/react-leaflet-custom-control";
-import { MapLayer, withLeaflet, Marker, Polygon, Circle, Polyline } from "react-leaflet";
+import {
+  MapLayer,
+  withLeaflet,
+  Marker,
+  Polygon,
+  Circle,
+  Polyline
+} from "react-leaflet";
 import {
   IFigurePolygon,
   ICircle,
@@ -11,6 +18,7 @@ import {
 import InformationAboutPolygon from "./informationPolygon";
 import InformationAboutCircle from "./informationCircle";
 import InformationAboutPoint from "./informationPoint";
+import InformationAboutLineString from "./informationLineString";
 import AddFigureType from "./addFigureType";
 import ListFigures from "./listFigures";
 import { iconMarker, iconMarkerNotActive } from "./icons";
@@ -181,18 +189,21 @@ class FigureEditor extends MapLayer<any> {
     );
   };
 
-  dragLineStringPoint = (index: number)  => (e: any) => {
+  dragLineStringPoint = (index: number) => (e: any) => {
     this.setState(
       (prevState: IfigureEditorState): IfigureEditorState => {
         const activeFigure: any = this.getActiveFigure(prevState);
         if (activeFigure) {
-          activeFigure.coordinates = index === 0 ? [[e.latlng.lat, e.latlng.lng], activeFigure.coordinates[1]] : [activeFigure.coordinates[0], [e.latlng.lat, e.latlng.lng]];
+          activeFigure.coordinates =
+            index === 0
+              ? [[e.latlng.lat, e.latlng.lng], activeFigure.coordinates[1]]
+              : [activeFigure.coordinates[0], [e.latlng.lat, e.latlng.lng]];
         }
         return prevState;
       },
       () => this.props.calbackChange(this.state)
     );
-  }
+  };
 
   dragPoint = () => (e: any) => {
     this.setState(
@@ -272,8 +283,8 @@ class FigureEditor extends MapLayer<any> {
           onDrag={this.dragLineStringPoint(1)}
         />
       ) : null
-    ]
-  }
+    ];
+  };
 
   public render() {
     const activeFigure: any = this.state.activeFigureID
@@ -310,6 +321,11 @@ class FigureEditor extends MapLayer<any> {
                   />
                 ) : activeFigure.type === "Point" ? (
                   <InformationAboutPoint
+                    deleteFigure={(id: string) => this.deleteFigure(id)}
+                    figure={activeFigure}
+                  />
+                ) : activeFigure.type === "LineString" ? (
+                  <InformationAboutLineString
                     deleteFigure={(id: string) => this.deleteFigure(id)}
                     figure={activeFigure}
                   />
@@ -352,15 +368,17 @@ class FigureEditor extends MapLayer<any> {
             ];
           } else if (figure.type === "LineString") {
             return [
-              figure.coordinates.length === 2 ? <Polyline
-                key={figure.id}
-                positions={figure.coordinates}
-                color={
-                  figure.id === this.state.activeFigureID ? "red" : "blue"
-                }
-              /> : null,
+              figure.coordinates.length === 2 ? (
+                <Polyline
+                  key={figure.id}
+                  positions={figure.coordinates}
+                  color={
+                    figure.id === this.state.activeFigureID ? "red" : "blue"
+                  }
+                />
+              ) : null,
               this.renderLineStringPoints(figure.id, figure.coordinates)
-            ]
+            ];
           } else if (figure.type === "Point" && figure.coordinates.length) {
             return (
               <Marker
