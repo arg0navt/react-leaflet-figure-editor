@@ -8,6 +8,7 @@
 ![](https://github.com/argonavt11/react-leaflet-figure-editor/blob/master/public/demo.gif?raw=true)
 
 </div>
+
 ---
 
 #### Install
