@@ -1,6 +1,7 @@
 import * as React from "react";
 import FigureEditor from "./react-leaflet-figure-editor";
 import AddFigureType from "./react-leaflet-figure-editor/addFigureType";
+import ListFigures from "./react-leaflet-figure-editor/listFigures";
 import { Map, TileLayer } from "react-leaflet";
 import * as Adapter from "enzyme-adapter-react-16";
 import { configure, shallow } from "enzyme";
@@ -23,7 +24,7 @@ it("render default", () => {
   expect(wrapper);
 });
 
-it("render addFigureType", () => {
+it("addFigureType", () => {
   const returnFigure = figure => {
     if (
       figure.type === "Polygon" ||
@@ -57,3 +58,20 @@ it("render addFigureType", () => {
   wrapper.find(".click-2").simulate("click");
   wrapper.find(".click-3").simulate("click");
 });
+
+it("listFigures", () => {
+  const changeActiveFigure = id => console.log(id)
+  const wrapper = shallow(<ListFigures
+    figures={[]}
+    activeFigureID={null}
+    changeActiveFigure={changeActiveFigure}
+  />);
+  wrapper.setProps({figures: [{type: "Polygon", coordinates: [[]], id: "1"}]})
+  wrapper.setProps({figures: [{type: "Polygon", coordinates: [[]], id: "1"}, {type: "Polygon", coordinates: [[]], id: "2"}]})
+  expect(wrapper.find('.list-figures').childAt(0).props().params).toEqual({ type: 'Polygon', coordinates: [ [] ], id: '1' })
+  expect(wrapper.find('.list-figures').childAt(1).props().params).toEqual({ type: 'Polygon', coordinates: [ [] ], id: '2' })
+  wrapper.setProps({activeFigureID: "1"})
+  expect(wrapper.find('.list-figures').childAt(0).html()).toEqual('<div class="figure-item"><p>Polygon</p><div class="figure-item-active"></div></div>')
+  wrapper.find('.list-figures').childAt(1).simulate("click");
+  expect(wrapper)
+})
