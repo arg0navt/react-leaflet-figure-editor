@@ -32,16 +32,23 @@ it("render addFigureType", () => {
       figure.type === "Point"
     ) {
       if (figure.type === "Polygon") {
-        if (
-          !(
-            figure.coordinates &&
-            figure.coordinates.length &&
-            figure.coordinates[0].length
-          )
-        ) {
-          expect(() => {}).toThrowError("🔥 button Polygon don't add coordinates 🔥")
-        }
+          delete figure.id
+          expect(figure).toEqual({type: "Polygon", coordinates: [[]]})
       }
+      if (figure.type === "Circle") {
+        delete figure.id
+        expect(figure).toEqual({type: "Circle", coordinates: [], pointRadius: [], radius: 0, properties: {radius_units: "m"}})
+      }
+      if (figure.type === "LineString") {
+        delete figure.id
+        expect(figure).toEqual({type: "LineString", coordinates: []})
+      }
+      if (figure.type === "Point") {
+        delete figure.id
+        expect(figure).toEqual({type: "Point", coordinates: []})
+      }
+    } else {
+      expect(() => {}).toThrowError("🔥 not correct type 🔥")
     }
   };
   const wrapper = shallow(<AddFigureType addFigure={returnFigure} />);
