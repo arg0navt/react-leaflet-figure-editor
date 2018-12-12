@@ -60,7 +60,10 @@ it("addFigureType", () => {
 });
 
 it("listFigures", () => {
-  const changeActiveFigure = id => console.log(id)
+  const changeActiveFigure = id => {
+    wrapper.setProps({activeFigureID: id})
+    wrapper.update()
+  }
   const wrapper = shallow(<ListFigures
     figures={[]}
     activeFigureID={null}
@@ -72,6 +75,4 @@ it("listFigures", () => {
   expect(wrapper.find('.list-figures').childAt(1).props().params).toEqual({ type: 'Polygon', coordinates: [ [] ], id: '2' })
   wrapper.setProps({activeFigureID: "1"})
   expect(wrapper.find('.list-figures').childAt(0).html()).toEqual('<div class="figure-item"><p>Polygon</p><div class="figure-item-active"></div></div>')
-  wrapper.find('.list-figures').childAt(1).simulate("click");
-  expect(wrapper)
 })
