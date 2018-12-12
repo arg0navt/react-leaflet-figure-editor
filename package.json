@@ -119,7 +119,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "/Users/argonavt/react-leaflet-figure-editor/tsconfig.test.json"
+        "tsConfigFile": "./tsconfig.test.json"
       }
     }
   },
