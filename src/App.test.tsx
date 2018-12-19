@@ -4,6 +4,7 @@ import AddFigureType from "./react-leaflet-figure-editor/addFigureType";
 import ListFigures from "./react-leaflet-figure-editor/listFigures";
 import InformationAboutPolygon from "./react-leaflet-figure-editor/informationPolygon";
 import InformationAboutCircle from "./react-leaflet-figure-editor/informationCircle";
+import InformationAboutLineString from "./react-leaflet-figure-editor/informationLineString";
 import { Map, TileLayer } from "react-leaflet";
 import * as Adapter from "enzyme-adapter-react-16";
 import { configure, shallow } from "enzyme";
@@ -167,5 +168,33 @@ it("inforationCircle", () => {
       properties: { radius_units: "m" }
     }
   });
-  expect(wrapper.html()).toEqual('<div class="figure-info"><p>Center: <span>47.445745, 40.272891666666666</span></p><p>Radius: <span>200.00</span></p><button>Delete figure</button></div>')
+  expect(wrapper.html()).toEqual(
+    '<div class="figure-info"><p>Center: <span>47.445745, 40.272891666666666</span></p><p>Radius: <span>200.00</span></p><button>Delete figure</button></div>'
+  );
+});
+
+it("inforationLineString", () => {
+  const callbackDeleteFigure = id => console.log(id);
+  const activeFigure = { type: "LineString", id: "1", coordinates: [] };
+  const wrapper = shallow(
+    <InformationAboutLineString
+      deleteFigure={callbackDeleteFigure}
+      figure={activeFigure}
+    />
+  );
+  expect(wrapper.html()).toEqual(
+    '<div class="figure-info"><p style="margin-bottom:0">Don&#x27;t have data</p><button>Delete figure</button></div>'
+  );
+  wrapper.setProps({
+    figure: {
+      type: "LineString",
+      id: "1",
+      coordinates: [
+        [47.445745, 40.272891666666666], [47.445745, 40.272891666666666]
+      ]
+    }
+  });
+  expect(wrapper.html()).toEqual(
+    '<div class="figure-info"><p>First point:<span>47.445745, 40.272891666666666</span></p><p>Second point:<span>47.445745, 40.272891666666666</span></p><button>Delete figure</button></div>'
+  );
 });
