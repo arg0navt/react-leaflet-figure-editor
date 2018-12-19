@@ -2,6 +2,7 @@ import * as React from "react";
 import FigureEditor from "./react-leaflet-figure-editor";
 import AddFigureType from "./react-leaflet-figure-editor/addFigureType";
 import ListFigures from "./react-leaflet-figure-editor/listFigures";
+import InformationAboutPolygon from "./react-leaflet-figure-editor/informationPolygon";
 import { Map, TileLayer } from "react-leaflet";
 import * as Adapter from "enzyme-adapter-react-16";
 import { configure, shallow } from "enzyme";
@@ -75,4 +76,18 @@ it("listFigures", () => {
   expect(wrapper.find('.list-figures').childAt(1).props().params).toEqual({ type: 'Polygon', coordinates: [ [] ], id: '2' })
   wrapper.setProps({activeFigureID: "1"})
   expect(wrapper.find('.list-figures').childAt(0).html()).toEqual('<div class="figure-item"><p>Polygon</p><div class="figure-item-active"></div></div>')
+})
+
+it("inforationPolygon", () => {
+  const callbackDeletePoint = index => console.log(index)
+  const callbackDeleteFigure = id => console.log(id)
+  const activeFigure = {type: "Polygon", id: "1", coordinates: [[]]}
+  const wrapper = shallow(<InformationAboutPolygon
+    deletePolygonPoint={callbackDeletePoint}
+    deleteFigure={callbackDeleteFigure}
+    figure={activeFigure}
+  />)
+  expect(wrapper.html()).toEqual('<div class="figure-info"><p>Points</p><div class="figure-info__points"></div><button>Delete figure</button></div>')
+  wrapper.setProps({figure: {type: "Polygon", id: "1", coordinates: [[[47.445745, 40.272891666666666], [47.445745, 40.272891666666666]]]}})
+  expect(wrapper.html()).toEqual('<div class="figure-info"><p>Points</p><div class="figure-info__points"><p>47.445745, 40.272891666666666</p><p>47.445745, 40.272891666666666</p></div><button>Delete figure</button></div>')
 })
