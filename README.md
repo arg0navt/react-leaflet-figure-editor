@@ -45,4 +45,4 @@ export default App;
 
 | Prop             | Type     | Default           | Description                                                                                                                                                                                |
 | --------------- | ------- | ---------------- | ------------------------------------------------------------- |
-| calbackChange    | Function    | () => {}    | Called after change figures                                                                                                                                                        |
+| callbackChange    | Function    | () => {}    | Called after change figures                                                                                                                                                        |
