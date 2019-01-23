@@ -34,7 +34,7 @@ declare module "react-leaflet" {
 
 class FigureEditor extends MapLayer<any> {
   static defaultProps = {
-    calbackChange: () => {}
+    callbackChange: () => {}
   };
 
   state: IfigureEditorState = {
@@ -66,7 +66,7 @@ class FigureEditor extends MapLayer<any> {
         figureList: [...this.state.figureList, figure],
         activeFigureID: figure.id
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
 
   changeActiveFigure = (id: string): void =>
@@ -102,7 +102,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -120,7 +120,7 @@ class FigureEditor extends MapLayer<any> {
         );
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -135,7 +135,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -148,7 +148,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -167,7 +167,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -185,7 +185,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -201,7 +201,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
@@ -214,7 +214,7 @@ class FigureEditor extends MapLayer<any> {
         }
         return prevState;
       },
-      () => this.props.calbackChange(this.state)
+      () => this.props.callbackChange(this.state)
     );
   };
 
