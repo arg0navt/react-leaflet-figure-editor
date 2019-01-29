@@ -2,10 +2,10 @@
 
 <div align="center">
   
-[![Build Status](https://travis-ci.org/argonavt11/react-leaflet-figure-editor.svg?branch=master)](https://travis-ci.org/argonavt11/react-leaflet-figure-editor)
-[![CircleCI](https://circleci.com/gh/argonavt11/react-leaflet-figure-editor.svg?style=svg)](https://circleci.com/gh/argonavt11)
+[![Build Status](https://travis-ci.org/arg0navt/react-leaflet-figure-editor.svg?branch=master)](https://travis-ci.org/argonavt11/react-leaflet-figure-editor)
+[![CircleCI](https://circleci.com/gh/arg0navt/react-leaflet-figure-editor.svg?style=svg)](https://circleci.com/gh/argonavt11)
 
-![](https://github.com/argonavt11/react-leaflet-figure-editor/blob/master/public/demo.gif?raw=true)
+![](https://github.com/arg0navt/react-leaflet-figure-editor/blob/master/public/demo.gif?raw=true)
 
 </div>
 
